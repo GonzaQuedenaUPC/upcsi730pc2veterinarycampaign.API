@@ -8,6 +8,6 @@ public class ManagerResourceFromEntityAssembler
     public static ManagerResource ToResourceFromEntity(Manager manager)
     {
         return new ManagerResource(manager.FirstName, manager.LastName, manager.Status, manager.ApprovedAt,
-            manager.ReportedAt, manager.ContactedAt, manager.AssignedSalesAgentId, manager.VeterinaryCampaignManagerId);
+            manager.ReportedAt, manager.ContactedAt, manager.AssignedSalesAgentIdentifier, manager.VeterinaryCampaignManagerIdentifier);
     }
 }
