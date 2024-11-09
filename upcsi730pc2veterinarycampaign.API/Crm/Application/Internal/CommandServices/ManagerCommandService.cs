@@ -11,13 +11,21 @@ public class ManagerCommandService(IManagerRepository managerRepository, IUnitOf
 {
     public async Task<Manager?> Handle(CreateManagerCommand command)
     {
-       var manager = await managerRepository.FindByFirstNameAndLastNameAsync(command.FirstName, 
-           command.LastName);
+       var manager = await managerRepository.FindByFirstNameAndLastNameAsync(command.FirstName, command.LastName);
 
        if (manager != null)
            throw new InvalidOperationException("Manager already exists.");
 
+       if (command is { Status: > 1, AssignedSalesAgentId: <= 0 } && command.ContactedAt.Equals(null))
+           throw new InvalidOperationException("Status cannot be assigned if the " +
+                                               "manager is not contacted and assigned to an agent.");
+
+       if (command.Status > 3 && command.ApprovedAt.Equals(null))
+           throw new InvalidOperationException("Status cannot be assigned if the " + "manager is not approved.");
+       
        manager = new Manager(command);
+
+       if (manager.Status.Equals(0)) manager.Status = 1;
 
        try
        {
